@@ -1,6 +1,57 @@
 /*
- * 创建一个包含所有卡片的数组
+ * 创建一个包含所有卡片的数组    有 open show match
  */
+ 
+function start() {
+	var allcardhtml = new Array(16);
+	var allcard = new Array(17);
+	var open = new Array();
+	var $card = $(".card");
+	for (i = 0; i < 16; i++) {
+		allcardhtml[i] = $card.eq(i).html();
+	};
+	shuffle(allcardhtml);
+	for (i = 0; i < 16; i++) {
+		$card.eq(i).html(allcardhtml[i]);
+		allcard[i+1] = $card.eq(i);
+	};                                         //洗牌 完成
+	$card.each(function() {
+		$(this).on("click",function() {       //不匹配要等1S  allcard.forEach不行
+			$(this).addClass("open show");    //可以重复点击同一个按钮
+			open.push($(this));
+			if (open.length === 2) {
+				open[0].removeClass("open show");
+				open[1].removeClass("open show");
+				if (open[0].html() == open[1].html()) {
+					open[0].addClass("match");
+					open[1].addClass("match");
+				};
+				open = [];
+			}
+		})
+	})
+}
+/*
+function match(qwe) {
+	var open = new Array(2);
+	qwe.on("click",function() {
+		qwe.addClass("open show");
+		open.push(qwe);
+		if (open.length === 2) {
+			open[0].removeClass("open show");
+			open[1].removeClass("open show");
+			if (open[0] == open[1]) {
+				open[0].addClass("match");
+				open[1].addClass("match");
+			};
+			open = [];
+		};
+	};
+}
+
+*/
+
+
 
 
 /*
@@ -36,3 +87,14 @@ function shuffle(array) {
  *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
  *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
  */
+
+
+
+
+
+
+$(function(){
+	start();
+	/*var $card = $(".card");
+	$card.addClass("match");*/
+});
