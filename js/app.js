@@ -4,6 +4,7 @@
  var t = 0; //全局变量
  var set_timer;
  var moves = 0;
+ var star = 3;
  function reset() {  
  	t = 0;
  	clearInterval(set_timer);
@@ -39,11 +40,11 @@ function start() {
 			$card.addClass("lock");//
 			moves++;                      //累加步数
 			$(".moves").html(moves);      //计算步数
-			if ($(".fa-star").eq(2).hasClass("fa-star") & (moves === 15 || t == 30)) {   //t到30不会变
-				$(".fa-star").eq(2).removeClass("fa-star").addClass("fa-star-o");
+			if ($(".fa-star").eq(2).hasClass("fa-star") & moves === 15) {
+				down(2);
 			};
-			if ($(".fa-star").eq(1).hasClass("fa-star") & (moves === 20 || t == 60)) {
-				$(".fa-star").eq(1).removeClass("fa-star").addClass("fa-star-o");
+			if ($(".fa-star").eq(1).hasClass("fa-star") & moves === 20) {
+				down(1);
 			};
 			setTimeout(function(){					//1S计时匹配
 				open[0].removeClass("open show");
@@ -63,6 +64,10 @@ function start() {
 	})
 }
 
+function down(num) {   //降星函数
+	$(".fa-star").eq(num).removeClass("fa-star").addClass("fa-star-o");
+}
+
 function win() {
 	alert("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，花费了" + t + "秒时间，你获得的评级为" + $(".fa-star").length + "颗星！");
 	clearInterval(set_timer);
@@ -70,6 +75,12 @@ function win() {
 
 function timer() {
 	t+=1;
+	if ($(".fa-star").eq(2).hasClass("fa-star") & t === 30) {
+		down(2);
+	};
+	if ($(".fa-star").eq(1).hasClass("fa-star") & t === 45) {
+		down(1);
+	};
 	$(".time").html(t + "秒");
 }
 
