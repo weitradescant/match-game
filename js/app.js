@@ -3,65 +3,67 @@
  */
  
 function start() {
-	var allcardhtml = new Array(16);
-	var allcard = new Array(17);
-	var open = new Array();
+	var moves = 0;
+	//$(".moves").html(moves);
+	//var allcard = new Array(17);
+	var open = [];
+	var match = [];
+	var $card = $(".card");	
+	$(".deck").on("click",".card",function() {       //不匹配要等1S  allcard.forEach不行
+		if (! $(this).hasClass("lock") & ! $(this).hasClass("match")
+			& ! $(this).hasClass("open")) {  //lock实现1S判定时间内其他卡片无法点击 match实现匹配的卡无法点击
+			$(this).addClass("open show");//翻牌功能				
+			open.push($(this));
+		} else {
+			return;
+		}		
+		if (open.length === 2) {
+			$card.addClass("lock");//
+			moves++;                      //累加步数
+			$(".moves").html(moves);      //计算步数
+			if (moves === 15) {
+				$(".fa-star").eq(2).removeClass("fa-star").addClass("fa-star-o");
+			};
+			if (moves === 20) {
+				$(".fa-star").eq(1).removeClass("fa-star").addClass("fa-star-o");
+			};
+			setTimeout(function(){					//1S计时匹配
+				open[0].removeClass("open show");
+				open[1].removeClass("open show");
+				if (open[0].html() === open[1].html()) {  //match
+					open[0].addClass("match");
+					open[1].addClass("match");
+					match.push.apply(match,open);
+				};
+				open = [];
+				$card.removeClass("lock");
+				if (match.length === 16) {
+					win();
+				}
+			},1000)     //计时功能 				
+		}
+	})
+}
+
+function win() {
+	alert("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，你获得的评级为" + $(".fa-star").length + "颗星！");
+}
+
+function reset() {  //洗牌 完成
 	var $card = $(".card");
+	var allcardhtml = new Array(16);
+	$(".card").removeClass("open show match lock");
 	for (i = 0; i < 16; i++) {
 		allcardhtml[i] = $card.eq(i).html();
 	};
 	shuffle(allcardhtml);
 	for (i = 0; i < 16; i++) {
 		$card.eq(i).html(allcardhtml[i]);
-		allcard[i+1] = $card.eq(i);
-	};                                         //洗牌 完成
-	$card.each(function() {
-		$(this).on("click",function() {       //不匹配要等1S  allcard.forEach不行
-			$(this).addClass("open show");    //可以重复点击同一个按钮
-			open.push($(this));
-			if (open.length === 2) {
-				open[0].removeClass("open show");
-				open[1].removeClass("open show");
-				if (open[0].html() == open[1].html()) {
-					open[0].addClass("match");
-					open[1].addClass("match");
-				};
-				open = [];
-			}
-		})
-	})
-}
-/*
-function match(qwe) {
-	var open = new Array(2);
-	qwe.on("click",function() {
-		qwe.addClass("open show");
-		open.push(qwe);
-		if (open.length === 2) {
-			open[0].removeClass("open show");
-			open[1].removeClass("open show");
-			if (open[0] == open[1]) {
-				open[0].addClass("match");
-				open[1].addClass("match");
-			};
-			open = [];
-		};
-	};
+		//allcard[i+1] = $card.eq(i);
+	}; 
+	start();
 }
 
-*/
-
-
-
-
-/*
- * 显示页面上的卡片
- *   - 使用下面提供的 "shuffle" 方法对数组中的卡片进行洗牌
- *   - 循环遍历每张卡片，创建其 HTML
- *   - 将每张卡的 HTML 添加到页面
- */
-
-// 洗牌函数来自于 http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -72,9 +74,13 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
 }
+
+$(function(){
+	reset();
+	//$(".restart").on("click",reset());
+});
 
 
 /*
@@ -87,14 +93,3 @@ function shuffle(array) {
  *    + 增加移动计数器并将其显示在页面上（将这个功能放在你从这个函数中调用的另一个函数中）
  *    + 如果所有卡都匹配，则显示带有最终分数的消息（将这个功能放在你从这个函数中调用的另一个函数中）
  */
-
-
-
-
-
-
-$(function(){
-	start();
-	/*var $card = $(".card");
-	$card.addClass("match");*/
-});
