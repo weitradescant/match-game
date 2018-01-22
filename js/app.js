@@ -5,10 +5,12 @@
  var set_timer;
  var moves = 0;
  var star = 3;
+ var match = [];
  function reset() {  
  	t = 0;
  	clearInterval(set_timer);
  	moves = 0;
+ 	match = []
  	$(".moves").html(moves);
  	set_timer = setInterval(timer,1000);
 	var $card = $(".card");	
@@ -26,9 +28,8 @@
 
 function start() {	
 	var open = [];
-	var match = [];
 	var $card = $(".card");	
-	$(".deck").on("click",".card",function() {
+	$(".deck").on("click",".card",function() {    //将每张卡片放入一个数组 然后数组用forEach遍历执行失败
 		if (! $(this).hasClass("lock") & ! $(this).hasClass("match")
 			& ! $(this).hasClass("open")) {  //lock实现1S判定时间内其他卡片无法点击 match实现匹配的卡无法点击
 			$(this).addClass("open show");//翻牌功能				
