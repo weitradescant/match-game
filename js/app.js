@@ -1,15 +1,33 @@
 /*
  * 创建一个包含所有卡片的数组    有 open show match
  */
- 
-function start() {
-	var moves = 0;
-	//$(".moves").html(moves);
-	//var allcard = new Array(17);
+ var t = 0; //全局变量
+ var set_timer;
+ var moves = 0;
+ function reset() {  
+ 	t = 0;
+ 	clearInterval(set_timer);
+ 	moves = 0;
+ 	$(".moves").html(moves);
+ 	set_timer = setInterval(timer,1000);
+	var $card = $(".card");	
+	var allcardhtml = new Array(16);
+	$(".card").removeClass("open show match lock");  //reset时去除所有样式
+	for (i = 0; i < 16; i++) {
+		allcardhtml[i] = $card.eq(i).html();
+	};
+	shuffle(allcardhtml);
+	for (i = 0; i < 16; i++) {
+		$card.eq(i).html(allcardhtml[i]);
+	}; 
+	start();	
+}
+
+function start() {	
 	var open = [];
 	var match = [];
 	var $card = $(".card");	
-	$(".deck").on("click",".card",function() {       //不匹配要等1S  allcard.forEach不行
+	$(".deck").on("click",".card",function() {
 		if (! $(this).hasClass("lock") & ! $(this).hasClass("match")
 			& ! $(this).hasClass("open")) {  //lock实现1S判定时间内其他卡片无法点击 match实现匹配的卡无法点击
 			$(this).addClass("open show");//翻牌功能				
@@ -21,10 +39,10 @@ function start() {
 			$card.addClass("lock");//
 			moves++;                      //累加步数
 			$(".moves").html(moves);      //计算步数
-			if (moves === 15) {
+			if ($(".fa-star").eq(2).hasClass("fa-star") & (moves === 15 || t == 30)) {   //t到30不会变
 				$(".fa-star").eq(2).removeClass("fa-star").addClass("fa-star-o");
 			};
-			if (moves === 20) {
+			if ($(".fa-star").eq(1).hasClass("fa-star") & (moves === 20 || t == 60)) {
 				$(".fa-star").eq(1).removeClass("fa-star").addClass("fa-star-o");
 			};
 			setTimeout(function(){					//1S计时匹配
@@ -46,23 +64,15 @@ function start() {
 }
 
 function win() {
-	alert("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，你获得的评级为" + $(".fa-star").length + "颗星！");
+	alert("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，花费了" + t + "秒时间，你获得的评级为" + $(".fa-star").length + "颗星！");
+	clearInterval(set_timer);
 }
 
-function reset() {  //洗牌 完成
-	var $card = $(".card");
-	var allcardhtml = new Array(16);
-	$(".card").removeClass("open show match lock");
-	for (i = 0; i < 16; i++) {
-		allcardhtml[i] = $card.eq(i).html();
-	};
-	shuffle(allcardhtml);
-	for (i = 0; i < 16; i++) {
-		$card.eq(i).html(allcardhtml[i]);
-		//allcard[i+1] = $card.eq(i);
-	}; 
-	start();
+function timer() {
+	t+=1;
+	$(".time").html(t + "秒");
 }
+
 
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -79,7 +89,6 @@ function shuffle(array) {
 
 $(function(){
 	reset();
-	//$(".restart").on("click",reset());
 });
 
 
