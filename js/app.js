@@ -4,13 +4,14 @@
  var t = 0; //全局变量
  var set_timer;
  var moves = 0;
- var star = 3;
+ //var star = 3;
  var match = [];
  function reset() {  
  	t = 0;
  	clearInterval(set_timer);
  	moves = 0;
- 	match = []
+ 	match = [];
+ 	$(".fa-star-o").removeClass("fa-star-o").addClass("fa-star");
  	$(".moves").html(moves);
  	set_timer = setInterval(timer,1000);
 	var $card = $(".card");	
@@ -18,11 +19,11 @@
 	$(".card").removeClass("open show match lock");  //reset时去除所有样式
 	for (i = 0; i < 16; i++) {
 		allcardhtml[i] = $card.eq(i).html();
-	};
+	}
 	shuffle(allcardhtml);
 	for (i = 0; i < 16; i++) {
 		$card.eq(i).html(allcardhtml[i]);
-	}; 
+	}
 	start();	
 }
 
@@ -41,12 +42,12 @@ function start() {
 			$card.addClass("lock");//
 			moves++;                      //累加步数
 			$(".moves").html(moves);      //计算步数
-			if ($(".fa-star").eq(2).hasClass("fa-star") & moves === 15) {
+			if ($(".fa-star").eq(2).hasClass("fa-star") && moves === 15) {
 				down(2);
-			};
-			if ($(".fa-star").eq(1).hasClass("fa-star") & moves === 20) {
+			}
+			if ($(".fa-star").eq(1).hasClass("fa-star") && moves === 20) {
 				down(1);
-			};
+			}
 			setTimeout(function(){					//1S计时匹配
 				open[0].removeClass("open show");
 				open[1].removeClass("open show");
@@ -54,15 +55,15 @@ function start() {
 					open[0].addClass("match");
 					open[1].addClass("match");
 					match.push.apply(match,open);
-				};
+				}
 				open = [];
 				$card.removeClass("lock");
 				if (match.length === 16) {
 					win();
 				}
-			},1000)     //计时功能 				
+			},1000);     //计时功能 				
 		}
-	})
+	});
 }
 
 function down(num) {   //降星函数
@@ -76,12 +77,12 @@ function win() {
 
 function timer() {
 	t+=1;
-	if ($(".fa-star").eq(2).hasClass("fa-star") & t === 30) {
+	if ($(".fa-star").eq(2).hasClass("fa-star") && t === 30) {
 		down(2);
-	};
-	if ($(".fa-star").eq(1).hasClass("fa-star") & t === 45) {
+	}
+	if ($(".fa-star").eq(1).hasClass("fa-star") && t === 45) {
 		down(1);
-	};
+	}
 	$(".time").html(t + "秒");
 }
 
