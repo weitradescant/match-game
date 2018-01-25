@@ -2,12 +2,14 @@
  * 创建一个包含所有卡片的数组    有 open show match
  */
  var t = 0; //全局变量
+ var timer = 0;
  var set_timer;
  var moves = 0;
- //var star = 3;
  var match = [];
- function reset() {  
- 	t = 0;
+ function reset() { 
+ 	timer = 0;  //重置timer
+ 	t = 0;      //重置秒表
+ 	$(".time").empty();
  	clearInterval(set_timer);
  	moves = 0;
  	match = [];
@@ -31,6 +33,19 @@ function start() {
 	var open = [];
 	var $card = $(".card");	
 	$(".deck").on("click",".card",function() {    //将每张卡片放入一个数组 然后数组用forEach遍历执行失败
+		timer += 1;
+		if (timer === 1) {//避免重叠
+			set_timer = setInterval(function() {
+				t +=1 ;
+				if ($(".fa-star").eq(2).hasClass("fa-star") && t === 30) {
+					down(2);
+				}
+				if ($(".fa-star").eq(1).hasClass("fa-star") && t === 45) {
+					down(1);
+				}
+				$(".time").html(t + "秒");
+			},1000);
+		}
 		if (! $(this).hasClass("lock") & ! $(this).hasClass("match")
 			& ! $(this).hasClass("open")) {  //lock实现1S判定时间内其他卡片无法点击 match实现匹配的卡无法点击
 			$(this).addClass("open show");//翻牌功能				
@@ -38,7 +53,7 @@ function start() {
 		} else {
 			return;
 		}		
-		if (open.length === 2) {
+		if (open.length === 2) {			
 			$card.addClass("lock");//
 			moves++;                      //累加步数
 			$(".moves").html(moves);      //计算步数
@@ -71,21 +86,12 @@ function down(num) {   //降星函数
 }
 
 function win() {
-	alert("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，花费了" + t + "秒时间，你获得的评级为" + $(".fa-star").length + "颗星！");
 	clearInterval(set_timer);
+	var again = confirm("恭喜你赢得胜利，你总共花费了" + $(".moves").html() + "步数，花费了" + t + "秒时间，你获得的评级为" + $(".fa-star").length + "颗星！您是否需要再玩一次？");
+	if (again === true) {
+		reset();
+	} 
 }
-
-function timer() {
-	t+=1;
-	if ($(".fa-star").eq(2).hasClass("fa-star") && t === 30) {
-		down(2);
-	}
-	if ($(".fa-star").eq(1).hasClass("fa-star") && t === 45) {
-		down(1);
-	}
-	$(".time").html(t + "秒");
-}
-
 
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
